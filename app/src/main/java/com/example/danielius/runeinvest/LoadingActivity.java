@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +18,6 @@ import com.example.danielius.runeinvest.api.response.CategoryResponse;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
 import com.example.danielius.runeinvest.api.response.ItemResponse;
 import com.example.danielius.runeinvest.sqlite.MySQLiteHelper;
-import com.github.mikephil.charting.data.LineData;
 import com.pixplicity.easyprefs.library.Prefs;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class LoadingActivity extends ActionBarActivity {
+public class LoadingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,24 +1,28 @@
 package com.example.danielius.runeinvest.fragments;
 
-
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.api.Client;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -28,11 +32,9 @@ import retrofit.client.Response;
  */
 public class ChartFragment extends Fragment {
 
-    //@Bind(R.id.chart)
-    LineChart chart;
-
+    @BindView(R.id.graph) GraphView graphView;
     private String itemId;
-
+    Unbinder unbinder;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -43,10 +45,8 @@ public class ChartFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
-        chart = new LineChart(getActivity());
-        getActivity().setContentView(chart);
         Client.get().getItemGraph(itemId, new Callback<GraphResponse>() {
             @Override
             public void success(GraphResponse graphResponse, Response response) {
@@ -54,20 +54,19 @@ public class ChartFragment extends Fragment {
 
                 List<String> xVals = new ArrayList<String>();
                 List<Float> yVals = new ArrayList<Float>();
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
                 int i =0;
                 for (Map.Entry<String, String> entry : graphResponse.getData().entrySet()) {
                     i++;
                     if(i % 2 == 0){
-                        xVals.add(entry.getKey());
-                        yVals.add(Float.parseFloat(entry.getValue()));
+                        Double x = Double.parseDouble(entry.getKey());
+                        Double y = Double.parseDouble(entry.getValue());
+                        DataPoint point = new DataPoint(x,y);
+                        series.appendData(point, true, 10);
                     }
                 }
 
-                LineData data = new LineData(xVals,getDataSet(yVals));
-                chart.setData(data);
-                chart.setDescription("My Chart");
-                chart.animateX(2000);
-                chart.invalidate();
+                graphView.addSeries(series);
             }
 
             @Override
@@ -83,36 +82,10 @@ public class ChartFragment extends Fragment {
 
     }
 
-    private ArrayList<LineDataSet> getDataSet(List<Float> yVals) {
-        ArrayList<LineDataSet> dataSets = null;
-
-        ArrayList<Entry> valueSet = new ArrayList<>();
-        for(int i=0;i<yVals.size();i++){
-            float yVal = yVals.get(i);
-            Entry entry = new Entry(yVal,i);
-            valueSet.add(entry);
-        }
-
-        LineDataSet lineDataSet = new LineDataSet(valueSet, "Brand 1");
-        lineDataSet.setColor(Color.rgb(0, 155, 0));
-
-
-        dataSets = new ArrayList<>();
-        dataSets.add(lineDataSet);
-
-        return dataSets;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().setContentView(R.layout.activity_main);
+        unbinder.unbind();
     }
 
     public void setItemId(String itemId) {

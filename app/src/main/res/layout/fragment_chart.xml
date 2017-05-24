@@ -4,5 +4,10 @@
     tools:context="com.example.danielius.runeinvest.fragments.ChartFragment"
     android:orientation="vertical">
 
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/graph"
+        />
 
 </LinearLayout>
