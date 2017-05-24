@@ -13,16 +13,11 @@ import android.widget.LinearLayout;
 import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.api.Client;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RetrofitError;

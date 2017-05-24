@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1080382461413",
+    "firebase_url": "https://runeinvest-8d94b.firebaseio.com",
+    "project_id": "runeinvest-8d94b",
+    "storage_bucket": "runeinvest-8d94b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1080382461413:android:7f4a67d538f26d3f",
+        "android_client_info": {
+          "package_name": "com.example.danielius.runeinvest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1080382461413-0lia9kea0gilkr10tidqtifrjqmklvn3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.danielius.runeinvest",
+            "certificate_hash": "38a0275bddda3675f5636209ce88c766ef60e428"
+          }
+        },
+        {
+          "client_id": "1080382461413-fji5ds68k8u24akfshqb29qgfka3h8uc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB85noc1msQbg4n1cej34e9yMMvgITWg3E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1080382461413-fji5ds68k8u24akfshqb29qgfka3h8uc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

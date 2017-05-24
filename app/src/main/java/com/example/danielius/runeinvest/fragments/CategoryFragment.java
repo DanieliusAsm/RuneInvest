@@ -14,24 +14,25 @@ import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.api.model.Category;
 import com.example.danielius.runeinvest.api.model.Item;
 import com.example.danielius.runeinvest.sqlite.MySQLiteHelper;
-import com.shehabic.droppy.DroppyMenuPopup;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 
 public class CategoryFragment extends Fragment {
 
-    @Bind(R.id.my_items)
+    @BindView(R.id.my_items)
     RecyclerView recycler;
 
     private MyRecyclerAdapter adapter;
     List<Category> items = new ArrayList<Category>();
+    Unbinder unbinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,7 +44,7 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         adapter = new MyRecyclerAdapter(items);
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -58,7 +59,7 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private class MyRecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
@@ -89,7 +90,7 @@ public class CategoryFragment extends Fragment {
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind(R.id.item_title)
+        @BindView(R.id.item_title)
         TextView title;
 
         public ViewHolder(View itemView) {
@@ -97,7 +98,7 @@ public class CategoryFragment extends Fragment {
             ButterKnife.bind(this,itemView);
         }
 
-        @OnClick(R.id.card_view)
+        @OnClick(R.id.item_category)
         void onClick(){
             ItemsFragment fragment = new ItemsFragment();
             fragment.setCategoryId(getAdapterPosition());

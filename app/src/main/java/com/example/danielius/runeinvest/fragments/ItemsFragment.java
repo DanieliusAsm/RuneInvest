@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Callback;
@@ -185,42 +186,26 @@ public class ItemsFragment extends Fragment {
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        @Bind(R.id.item_image)
+        @BindView(R.id.item_image)
         ImageView itemImage;
 
-        @Bind(R.id.item_title)
+        @BindView(R.id.item_title)
         TextView title;
 
-        @Bind(R.id.item_price)
+        @BindView(R.id.item_price)
         TextView price;
 
-        @Bind(R.id.item_trend)
+        @BindView(R.id.item_trend)
         TextView trend;
 
-        @Bind(R.id.btn_options)
-        ImageButton options;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
 
-            DroppyMenuPopup.Builder droppyBuilder = new DroppyMenuPopup.Builder(getActivity(),options);
-            droppyBuilder.addMenuItem(new DroppyMenuItem("sdfdsasfd"))
-                    .addMenuItem(new DroppyMenuItem("domething"))
-                    .addSeparator();
-            droppyBuilder.addMenuItem(new DroppyMenuItem("test", R.mipmap.ic_launcher));
-
-            droppyBuilder.setOnClick(new DroppyClickCallbackInterface() {
-                @Override
-                public void call(View view, int id) {
-                    Log.d("click", String.valueOf(id));
-                }
-            });
-
-            DroppyMenuPopup popup = droppyBuilder.build();
         }
 
-        @OnClick(R.id.card_view)
+        @OnClick(R.id.row_item)
         void onClick(){
             ChartFragment fragment = new ChartFragment();
             fragment.setItemId(items.get(getAdapterPosition()).getItemId());
