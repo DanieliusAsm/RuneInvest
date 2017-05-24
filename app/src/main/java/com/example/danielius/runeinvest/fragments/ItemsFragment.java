@@ -1,6 +1,5 @@
 package com.example.danielius.runeinvest.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,18 +20,15 @@ import com.example.danielius.runeinvest.api.model.Item;
 import com.example.danielius.runeinvest.api.response.CategoryResponse;
 import com.example.danielius.runeinvest.api.response.ItemResponse;
 import com.example.danielius.runeinvest.sqlite.MySQLiteHelper;
-import com.shehabic.droppy.DroppyClickCallbackInterface;
-import com.shehabic.droppy.DroppyMenuItem;
-import com.shehabic.droppy.DroppyMenuPopup;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -41,7 +36,7 @@ import retrofit.client.Response;
 
 public class ItemsFragment extends Fragment {
 
-    @Bind(R.id.my_items)
+    @BindView(R.id.my_items)
     RecyclerView recycler;
 
     private int categoryId;
@@ -50,7 +45,7 @@ public class ItemsFragment extends Fragment {
     List<Alpha> alphaList = new ArrayList<Alpha>();
     private Runnable runnable;
     Handler handler;
-
+    Unbinder unbinder;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,7 +56,7 @@ public class ItemsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         handler = new Handler();
         adapter = new MyRecyclerAdapter(items);
@@ -148,11 +143,10 @@ public class ItemsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private class MyRecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
-
         List<Item> items;
 
         public MyRecyclerAdapter(List<Item> items) {
@@ -198,11 +192,9 @@ public class ItemsFragment extends Fragment {
         @BindView(R.id.item_trend)
         TextView trend;
 
-
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
-
         }
 
         @OnClick(R.id.row_item)
