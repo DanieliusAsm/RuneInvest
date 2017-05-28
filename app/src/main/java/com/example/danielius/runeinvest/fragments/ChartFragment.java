@@ -19,6 +19,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,18 +56,37 @@ public class ChartFragment extends Fragment {
                 List<String> xVals = new ArrayList<String>();
                 List<Float> yVals = new ArrayList<Float>();
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
+                Calendar c = Calendar.getInstance();
+
                 int i =0;
                 for (Map.Entry<String, String> entry : graphResponse.getData().entrySet()) {
                     i++;
-                    if(i % 2 == 0){
+                    if(i <20){
                         Double x = Double.parseDouble(entry.getKey());
+                        Long lx = Long.parseLong(entry.getKey());
                         Double y = Double.parseDouble(entry.getValue());
+                        c.setTimeInMillis(lx);
+
+                        int mYear = c.get(Calendar.YEAR);
+                        int mMonth = c.get(Calendar.MONTH);
+                        int mDay = c.get(Calendar.DAY_OF_MONTH);
+                        int hour = c.get(Calendar.HOUR_OF_DAY);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);
+
                         DataPoint point = new DataPoint(x,y);
                         series.appendData(point, true, 10);
+                        Log.d("data","X:"+lx+" y:"+y);
+
+                        Log.d("data","month:"+mMonth);
+                        Log.d("data","day:"+mDay);
+
                     }
                 }
 
                 graphView.addSeries(series);
+                graphView.getViewport().setScalable(true);
+                graphView.getGridLabelRenderer().setLabelFormatter(new);
             }
 
             @Override
