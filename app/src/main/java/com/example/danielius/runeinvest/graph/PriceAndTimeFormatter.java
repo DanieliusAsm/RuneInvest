@@ -1,5 +1,7 @@
 package com.example.danielius.runeinvest.graph;
 
+import android.util.Log;
+
 import com.jjoe64.graphview.DefaultLabelFormatter;
 
 import java.math.RoundingMode;
@@ -26,28 +28,38 @@ public class PriceAndTimeFormatter extends DefaultLabelFormatter{
             return "0";
         }
 
-        if(isValueX) {
+        if(!isValueX) {
             int length = (int) (Math.log10(value) + 1);
-            double formatted = value / Math.pow(10, length);
+            double formatted;
 
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
             decimalFormat.setRoundingMode(RoundingMode.CEILING);
             String formattedString;
-            formattedString = decimalFormat.format(formatted);
 
-            if (length >= 7 && length <= 9) {
-                formattedString = formattedString + "M";
+            if(length >=5 && length <=6){
+                formatted = value / Math.pow(10, 3);
+                formattedString = decimalFormat.format(formatted) + "k";
+            } else if (length >= 7 && length <= 9) {
+                formatted = value / Math.pow(10, 6);
+                formattedString = decimalFormat.format(formatted) + "M";
             } else if (length >= 10 && length <= 15) {
-                formattedString = formattedString + "B";
+                formatted = value / Math.pow(10, 9);
+                formattedString = decimalFormat.format(formatted) + "B";
+            }else{
+                return ""+value;
             }
+            Log.d("data","v:"+value+" length:"+length+" formatted:"+formatted);
+
             return formattedString;
         }else {
             long timeInMillis = (long) value;
             calendar.setTimeInMillis(timeInMillis);
             String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-            int mMonth = calendar.get(Calendar.MONTH) - 1;
+            int mMonth = calendar.get(Calendar.MONTH);
             int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+            Log.d("data",mMonth+" <-Month Day-> "+mDay+" mili "+timeInMillis);
 
             return month[mMonth] + " " + mDay;
         }

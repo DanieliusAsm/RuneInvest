@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.api.Client;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
+import com.example.danielius.runeinvest.graph.PriceAndTimeFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -58,10 +59,11 @@ public class ChartFragment extends Fragment {
                 LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
                 Calendar c = Calendar.getInstance();
 
+
                 int i =0;
                 for (Map.Entry<String, String> entry : graphResponse.getData().entrySet()) {
                     i++;
-                    if(i <20){
+                    //if(i <20){
                         Double x = Double.parseDouble(entry.getKey());
                         Long lx = Long.parseLong(entry.getKey());
                         Double y = Double.parseDouble(entry.getValue());
@@ -75,18 +77,20 @@ public class ChartFragment extends Fragment {
                         int sec = c.get(Calendar.SECOND);
 
                         DataPoint point = new DataPoint(x,y);
-                        series.appendData(point, true, 10);
-                        Log.d("data","X:"+lx+" y:"+y);
+                        series.appendData(point, true, 200);
+                        //Log.d("data","X:"+lx+" y:"+y);
 
-                        Log.d("data","month:"+mMonth);
-                        Log.d("data","day:"+mDay);
+                        //Log.d("data","month:"+mMonth);
+                        //Log.d("data","day:"+mDay);
 
-                    }
+                    //}
                 }
-
+                //180 calls formatter in x only 3 times.
+                //Log.d("data",series.size());
+                graphView.getGridLabelRenderer().setLabelFormatter(new PriceAndTimeFormatter());
                 graphView.addSeries(series);
                 graphView.getViewport().setScalable(true);
-                graphView.getGridLabelRenderer().setLabelFormatter(new);
+
             }
 
             @Override
