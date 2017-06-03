@@ -24,6 +24,7 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
@@ -74,7 +75,7 @@ public class ChartFragment extends Fragment {
                 ArrayList<Float> axisValues = timeFormatter.formatAxisValues(values,180);
                 ArrayList<String> axisLabels = timeFormatter.formatAxisLabels(values,180);
 
-                Line line = new Line(values);
+                Line line = new Line(values).setColor(Color.BLUE).setHasLabelsOnlyForSelected(true);
                 List<Line> lines = new ArrayList<Line>();
                 lines.add(line);
 
@@ -82,6 +83,21 @@ public class ChartFragment extends Fragment {
                 chartData.setLines(lines);
 
                 Axis xAxis = Axis.generateAxisFromCollection(axisValues,axisLabels);
+                chartData.setAxisXBottom(xAxis);
+
+                lineChart.setLineChartData(chartData);
+                lineChart.setValueSelectionEnabled(true);
+                /*lineChart.setOnValueTouchListener(new LineChartOnValueSelectListener() {
+                    @Override
+                    public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
+
+                    }
+
+                    @Override
+                    public void onValueDeselected() {
+
+                    }
+                });*/
             }
 
             @Override
