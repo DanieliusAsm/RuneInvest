@@ -67,7 +67,7 @@ public class LoadingActivity extends AppCompatActivity {
                 Log.d("debug", "fail");
             }
         });
-
+;
 
         //Prefs.putBoolean("initialized",false);
         //if(!Prefs.getBoolean("initialized",false)){
@@ -77,6 +77,7 @@ public class LoadingActivity extends AppCompatActivity {
         //}else{
             //Prefs.putBoolean("initialized",true);
             Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+            Intent intent2 = new Intent(LoadingActivity.this, ChartActivity.class);
             startActivity(intent);
             finish();
        // }

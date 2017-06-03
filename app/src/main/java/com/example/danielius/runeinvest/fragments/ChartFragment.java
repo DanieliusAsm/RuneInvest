@@ -8,14 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.api.Client;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
 import com.example.danielius.runeinvest.graph.PriceAndTimeFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,11 @@ import java.util.Calendar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.view.LineChartView;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -34,9 +37,11 @@ import retrofit.client.Response;
  */
 public class ChartFragment extends Fragment {
 
-    @BindView(R.id.graph) GraphView graphView;
+    @BindView(R.id.lineChart)
+    LineChartView lineChart;
     private String itemId;
     Unbinder unbinder;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,44 +58,33 @@ public class ChartFragment extends Fragment {
             @Override
             public void success(GraphResponse graphResponse, Response response) {
                 Log.d("debug","success");
-
                 List<String> xVals = new ArrayList<String>();
                 List<Float> yVals = new ArrayList<Float>();
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>();
-                Calendar c = Calendar.getInstance();
 
+                List<PointValue> values = new ArrayList<PointValue>();
 
-                int i =0;
                 for (Map.Entry<String, String> entry : graphResponse.getData().entrySet()) {
-                    i++;
-                    //if(i <20){
-                        Double x = Double.parseDouble(entry.getKey());
-                        Long lx = Long.parseLong(entry.getKey());
-                        Double y = Double.parseDouble(entry.getValue());
-                        c.setTimeInMillis(lx);
+                    Float x = Float.parseFloat(entry.getKey());
+                    Float y = Float.parseFloat(entry.getValue());
 
-                        int mYear = c.get(Calendar.YEAR);
-                        int mMonth = c.get(Calendar.MONTH);
-                        int mDay = c.get(Calendar.DAY_OF_MONTH);
-                        int hour = c.get(Calendar.HOUR_OF_DAY);
-                        int min = c.get(Calendar.MINUTE);
-                        int sec = c.get(Calendar.SECOND);
-
-                        DataPoint point = new DataPoint(x,y);
-                        series.appendData(point, true, 200);
-                        //Log.d("data","X:"+lx+" y:"+y);
-
-                        //Log.d("data","month:"+mMonth);
-                        //Log.d("data","day:"+mDay);
-
-                    //}
+                    values.add(new PointValue(x,y));
                 }
-                //180 calls formatter in x only 3 times.
-                //Log.d("data",series.size());
-                graphView.getGridLabelRenderer().setLabelFormatter(new PriceAndTimeFormatter());
-                graphView.addSeries(series);
-                graphView.getViewport().setScalable(true);
+                List<Float> axisValues = new ArrayList<Float>();
+                axisValues.add(values.get(0).getX());
+                axisValues.add(values.get(30).getX());
+                axisValues.add(values.get(61).getX());
+                axisValues.add(values.get(92).getX());
+                axisValues.add(values.get(123).getX());
+                axisValues.add(values.get(154).getX());
 
+                Line line = new Line(values);
+                List<Line> lines = new ArrayList<Line>();
+                lines.add(line);
+
+                LineChartData chartData = new LineChartData();
+                chartData.setLines(lines);
+
+                Axis xAxis = Axis.generateAxisFromCollection(axisValues,axisLabels);
             }
 
             @Override

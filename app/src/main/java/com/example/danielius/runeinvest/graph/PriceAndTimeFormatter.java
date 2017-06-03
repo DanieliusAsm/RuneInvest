@@ -2,7 +2,7 @@ package com.example.danielius.runeinvest.graph;
 
 import android.util.Log;
 
-import com.jjoe64.graphview.DefaultLabelFormatter;
+//import com.jjoe64.graphview.DefaultLabelFormatter;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -14,7 +14,7 @@ import java.util.Calendar;
  * Time provided is in Milliseconds. Outputs a month + day on x axis
  */
 
-public class PriceAndTimeFormatter extends DefaultLabelFormatter{
+public class PriceAndTimeFormatter /*extends DefaultLabelFormatter*/{
 
     Calendar calendar;
 
@@ -22,7 +22,7 @@ public class PriceAndTimeFormatter extends DefaultLabelFormatter{
         calendar = calendar==null ? Calendar.getInstance() : calendar;
     }
 
-    @Override
+    //@Override
     public String formatLabel(double value, boolean isValueX) {
         if(value<=0){
             return "0";
@@ -48,7 +48,7 @@ public class PriceAndTimeFormatter extends DefaultLabelFormatter{
             }else{
                 return ""+value;
             }
-            Log.d("data","v:"+value+" length:"+length+" formatted:"+formatted);
+            //Log.d("data","v:"+value+" length:"+length+" formatted:"+formatted);
 
             return formattedString;
         }else {
@@ -61,7 +61,7 @@ public class PriceAndTimeFormatter extends DefaultLabelFormatter{
 
             Log.d("data",mMonth+" <-Month Day-> "+mDay+" mili "+timeInMillis);
 
-            return month[mMonth] + " " + mDay;
+            return month[mMonth]+"";
         }
     }
 }
