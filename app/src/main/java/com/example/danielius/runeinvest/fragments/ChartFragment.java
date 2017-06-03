@@ -14,6 +14,7 @@ import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.api.Client;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
 import com.example.danielius.runeinvest.graph.PriceAndTimeFormatter;
+import com.example.danielius.runeinvest.graph.TimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +61,9 @@ public class ChartFragment extends Fragment {
                 Log.d("debug","success");
                 List<String> xVals = new ArrayList<String>();
                 List<Float> yVals = new ArrayList<Float>();
+                TimeFormatter timeFormatter = new TimeFormatter();
 
-                List<PointValue> values = new ArrayList<PointValue>();
+                ArrayList<PointValue> values = new ArrayList<PointValue>();
 
                 for (Map.Entry<String, String> entry : graphResponse.getData().entrySet()) {
                     Float x = Float.parseFloat(entry.getKey());
@@ -69,13 +71,8 @@ public class ChartFragment extends Fragment {
 
                     values.add(new PointValue(x,y));
                 }
-                List<Float> axisValues = new ArrayList<Float>();
-                axisValues.add(values.get(0).getX());
-                axisValues.add(values.get(30).getX());
-                axisValues.add(values.get(61).getX());
-                axisValues.add(values.get(92).getX());
-                axisValues.add(values.get(123).getX());
-                axisValues.add(values.get(154).getX());
+                ArrayList<Float> axisValues = timeFormatter.formatAxisValues(values,180);
+                ArrayList<String> axisLabels = timeFormatter.formatAxisLabels(values,180);
 
                 Line line = new Line(values);
                 List<Line> lines = new ArrayList<Line>();
