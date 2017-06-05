@@ -6,7 +6,10 @@ import android.util.Log;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import lecho.lib.hellocharts.model.PointValue;
 
 /**
  * Created by Danielius on 2017-05-27.
@@ -14,21 +17,32 @@ import java.util.Calendar;
  * Time provided is in Milliseconds. Outputs a month + day on x axis
  */
 
-public class PriceAndTimeFormatter /*extends DefaultLabelFormatter*/{
+public class PriceFormatter /*extends DefaultLabelFormatter*/ {
 
     Calendar calendar;
 
-    public PriceAndTimeFormatter(){
-        calendar = calendar==null ? Calendar.getInstance() : calendar;
+    public PriceFormatter() {
+        calendar = Calendar.getInstance();
     }
 
-    //@Override
-    public String formatLabel(double value, boolean isValueX) {
-        if(value<=0){
-            return "0";
-        }
+    public ArrayList<Float> formatAxisValues(float min, float max) {
+        ArrayList<Float> selectedValues = new ArrayList<>();
+        selectedValues.add(min);
+        float difference = (max-min)/9;
 
-        if(!isValueX) {
+        for(int i=0;i<8;i++){
+            float n = 2+i;
+            float axisValue = min + difference*(n-1);
+            selectedValues.add(axisValue);
+        }
+        selectedValues.add(max);
+        return selectedValues;
+    }
+
+    public ArrayList<String> formatAxisLabels(ArrayList<Float> axisValues) {
+        ArrayList<String> axisLabels = new ArrayList<>();
+
+        for(float value : axisValues){
             int length = (int) (Math.log10(value) + 1);
             double formatted;
 
@@ -36,7 +50,7 @@ public class PriceAndTimeFormatter /*extends DefaultLabelFormatter*/{
             decimalFormat.setRoundingMode(RoundingMode.CEILING);
             String formattedString;
 
-            if(length >=5 && length <=6){
+            if (length >= 5 && length <= 6) {
                 formatted = value / Math.pow(10, 3);
                 formattedString = decimalFormat.format(formatted) + "k";
             } else if (length >= 7 && length <= 9) {
@@ -45,23 +59,13 @@ public class PriceAndTimeFormatter /*extends DefaultLabelFormatter*/{
             } else if (length >= 10 && length <= 15) {
                 formatted = value / Math.pow(10, 9);
                 formattedString = decimalFormat.format(formatted) + "B";
-            }else{
-                return ""+value;
+            } else {
+                formattedString = "" + value;
             }
+            axisLabels.add(formattedString);
             //Log.d("data","v:"+value+" length:"+length+" formatted:"+formatted);
-
-            return formattedString;
-        }else {
-            long timeInMillis = (long) value;
-            calendar.setTimeInMillis(timeInMillis);
-            String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
-            int mMonth = calendar.get(Calendar.MONTH);
-            int mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-            Log.d("data",mMonth+" <-Month Day-> "+mDay+" mili "+timeInMillis);
-
-            return month[mMonth]+"";
         }
+
+        return axisLabels;
     }
 }

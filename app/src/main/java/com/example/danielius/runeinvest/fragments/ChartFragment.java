@@ -2,29 +2,25 @@ package com.example.danielius.runeinvest.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.api.Client;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
-import com.example.danielius.runeinvest.graph.PriceAndTimeFormatter;
+import com.example.danielius.runeinvest.graph.PriceFormatter;
 import com.example.danielius.runeinvest.graph.TimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
@@ -60,20 +56,27 @@ public class ChartFragment extends Fragment {
             @Override
             public void success(GraphResponse graphResponse, Response response) {
                 Log.d("debug","success");
-                List<String> xVals = new ArrayList<String>();
-                List<Float> yVals = new ArrayList<Float>();
                 TimeFormatter timeFormatter = new TimeFormatter();
-
+                PriceFormatter priceFormatter = new PriceFormatter();
                 ArrayList<PointValue> values = new ArrayList<PointValue>();
+                float maxY=0,minY=Float.MAX_VALUE;
 
                 for (Map.Entry<String, String> entry : graphResponse.getData().entrySet()) {
                     Float x = Float.parseFloat(entry.getKey());
                     Float y = Float.parseFloat(entry.getValue());
-
                     values.add(new PointValue(x,y));
+
+                    if(y>maxY){
+                        maxY = y;
+                    }
+                    if(y<minY){
+                        minY = y;
+                    }
                 }
-                ArrayList<Float> axisValues = timeFormatter.formatAxisValues(values,180);
-                ArrayList<String> axisLabels = timeFormatter.formatAxisLabels(values,180);
+                ArrayList<Float> xAxisValues = timeFormatter.formatAxisValues(values,180);
+                ArrayList<String> xAxisLabels = timeFormatter.formatAxisLabels(values,180);
+                ArrayList<Float> yAxisValues = priceFormatter.formatAxisValues(minY,maxY);
+                ArrayList<String> yAxisLabels = priceFormatter.formatAxisLabels(yAxisValues);
 
                 Line line = new Line(values).setColor(Color.BLUE).setHasLabelsOnlyForSelected(true);
                 List<Line> lines = new ArrayList<Line>();
@@ -82,11 +85,14 @@ public class ChartFragment extends Fragment {
                 LineChartData chartData = new LineChartData();
                 chartData.setLines(lines);
 
-                Axis xAxis = Axis.generateAxisFromCollection(axisValues,axisLabels);
+                Axis xAxis = Axis.generateAxisFromCollection(xAxisValues,xAxisLabels);
                 chartData.setAxisXBottom(xAxis);
+                Axis yAxis = Axis.generateAxisFromCollection(yAxisValues,yAxisLabels);
+                chartData.setAxisYLeft(yAxis);
 
                 lineChart.setLineChartData(chartData);
                 lineChart.setValueSelectionEnabled(true);
+
                 /*lineChart.setOnValueTouchListener(new LineChartOnValueSelectListener() {
                     @Override
                     public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
