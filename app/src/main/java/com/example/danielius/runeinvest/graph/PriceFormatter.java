@@ -47,7 +47,7 @@ public class PriceFormatter /*extends DefaultLabelFormatter*/ {
             double formatted;
 
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
-            decimalFormat.setRoundingMode(RoundingMode.CEILING);
+            decimalFormat.setRoundingMode(RoundingMode.HALF_EVEN);
             String formattedString;
 
             if (length >= 5 && length <= 6) {
