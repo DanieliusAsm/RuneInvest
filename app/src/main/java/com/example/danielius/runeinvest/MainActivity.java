@@ -17,6 +17,8 @@ import com.example.danielius.runeinvest.fragments.ItemsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    //todo move fragments to another activity. Use main activity for login with a register button + google sign in?
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,14 @@ public class MainActivity extends AppCompatActivity {
        // Intent intent = new Intent(MainActivity.this, SecondActivity.class);
         //startActivity(intent);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            //change fragment here
+        }else{}
     }
 
     @Override

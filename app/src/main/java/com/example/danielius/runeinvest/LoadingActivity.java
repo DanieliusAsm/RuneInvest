@@ -43,7 +43,7 @@ public class LoadingActivity extends AppCompatActivity {
                 .setUseDefaultSharedPreference(true)
                 .build();
 
-        Client.get().getItemGraph("4698", new Callback<GraphResponse>() {
+        /*Client.get().getItemGraph("4698", new Callback<GraphResponse>() {
             @Override
             public void success(GraphResponse graphResponse, Response response) {
                 Log.d("debug", "success");
@@ -66,7 +66,7 @@ public class LoadingActivity extends AppCompatActivity {
             public void failure(RetrofitError error) {
                 Log.d("debug", "fail");
             }
-        });
+        });*/
 ;
 
         //Prefs.putBoolean("initialized",false);
@@ -76,7 +76,7 @@ public class LoadingActivity extends AppCompatActivity {
             //}
         //}else{
             //Prefs.putBoolean("initialized",true);
-            Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoadingActivity.this, LoginActivity.class);
             Intent intent2 = new Intent(LoadingActivity.this, ChartActivity.class);
             startActivity(intent);
             finish();

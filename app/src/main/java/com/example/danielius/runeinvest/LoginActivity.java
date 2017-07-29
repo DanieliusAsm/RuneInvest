@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText password;
     @BindView(R.id.btn_login)
     Button login;
+
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -42,6 +43,19 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            //register success
+            Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            //fail
+        }
+    }
+
     @OnClick(R.id.btn_login)
     void onLoginClick(){
         String email = this.email.getText().toString();
@@ -50,6 +64,12 @@ public class LoginActivity extends AppCompatActivity {
         if(validate(email,password)){
             firebaseLogin(email,password);
         }
+    }
+
+    @OnClick(R.id.btn_register)
+    void onRegisterClick(){
+        Intent register = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivityForResult(register,0);
     }
 
     public boolean validate(String email, String password){

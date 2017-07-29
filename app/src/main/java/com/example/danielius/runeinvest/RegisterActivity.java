@@ -63,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Register successful", Toast.LENGTH_SHORT).show();
                     writeNewUser(task.getResult().getUser().getUid(),task.getResult().getUser().getDisplayName(),task.getResult().getUser().getEmail());
                     setResult(RESULT_OK);
-
+                    finish();
                 }else{
                     Toast.makeText(RegisterActivity.this, "Register failed", Toast.LENGTH_SHORT).show();
                     Log.w("firebase register", task.getException());
