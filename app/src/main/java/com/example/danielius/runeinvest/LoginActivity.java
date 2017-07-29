@@ -61,9 +61,9 @@ public class LoginActivity extends AppCompatActivity {
         String email = this.email.getText().toString();
         String password = this.password.getText().toString();
 
-        if(validate(email,password)){
-            firebaseLogin(email,password);
-        }
+        //if(validate(email,password)){
+            firebaseLogin("dan@gmail.com","kakadas");
+        //}
     }
 
     @OnClick(R.id.btn_register)
@@ -99,6 +99,9 @@ public class LoginActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     setResult(RESULT_OK);
                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }else{
                     Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
                     Log.w("firebase login", task.getException());

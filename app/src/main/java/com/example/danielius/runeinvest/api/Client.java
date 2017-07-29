@@ -1,10 +1,18 @@
 package com.example.danielius.runeinvest.api;
 
+import android.util.Log;
+
 import com.example.danielius.runeinvest.api.response.CategoryResponse;
 import com.example.danielius.runeinvest.api.response.GraphResponse;
 import com.example.danielius.runeinvest.api.response.ItemInfoResponse;
 import com.example.danielius.runeinvest.api.response.ItemResponse;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import retrofit.Callback;
 import retrofit.RequestInterceptor;
@@ -64,9 +72,14 @@ public class Client {
         if (_instance != null) {
             return _instance;
         }
+        OkHttpClient client = new OkHttpClient();
+        client.setConnectTimeout(15000, TimeUnit.MILLISECONDS);
+        client.setReadTimeout(20000, TimeUnit.MILLISECONDS);
+
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(API_URL)
+                .setClient(new OkClient(client))
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
 

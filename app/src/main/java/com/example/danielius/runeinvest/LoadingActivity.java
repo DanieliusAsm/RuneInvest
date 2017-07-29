@@ -67,7 +67,7 @@ public class LoadingActivity extends AppCompatActivity {
                 Log.d("debug", "fail");
             }
         });*/
-;
+
 
         //Prefs.putBoolean("initialized",false);
         //if(!Prefs.getBoolean("initialized",false)){
@@ -144,4 +144,5 @@ public class LoadingActivity extends AppCompatActivity {
 
         manager.notify(notificationId, mBuilder.build());
     }
+
 }
