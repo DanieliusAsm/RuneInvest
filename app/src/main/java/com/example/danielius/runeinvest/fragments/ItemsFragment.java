@@ -46,9 +46,14 @@ public class ItemsFragment extends Fragment {
     List<Item> items = new ArrayList<Item>();
     List<Alpha> alphaList = new ArrayList<Alpha>();
     ArrayList<Integer> categories = new ArrayList<>();
+    ArrayList<Integer> pages = new ArrayList<>();
     private Runnable runnable;
+    private Runnable categoryRunnable;
     Handler handler;
     Unbinder unbinder;
+    int totalItems=0;
+    int delayTimer = 1500;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,6 +67,7 @@ public class ItemsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
         handler = new Handler();
+
         adapter = new MyRecyclerAdapter(items);
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         recycler.setAdapter(adapter);
@@ -87,12 +93,53 @@ public class ItemsFragment extends Fragment {
                         Log.d("debug","fail");
                     }
                 });*/
-                startDownloading();
+                downloadCategories();
             //}
         }
     }
 
-    private void startDownloading() {
+    public void downloadCategories(){
+        for(int i=0;i<38;i++){
+            categories.add(i);
+        }
+        categoryRunnable = new Runnable(){
+            @Override
+            public void run(){
+                if(categories.size()!=0){
+                    Log.d("debug", "category request"+categories.get(0));
+                    Client.get().getCategory("" + categories.get(0), new Callback<CategoryResponse>() {
+                        @Override
+                        public void success(CategoryResponse categoryResponse, Response response) {
+
+                            //alphaList.clear();
+                            if(categoryResponse!=null){
+                                Log.d("debug", "category success");
+                                alphaList.addAll(categoryResponse.getAlpha());
+                                categories.remove(0);
+                            }else{
+                                Log.d("debug", "category fail, repeating in 2s");
+                            }
+                            handler.postDelayed(categoryRunnable,2000);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            Log.d("debug", "fail");
+                            handler.postDelayed(categoryRunnable,2000);
+                        }
+                    });
+                }else{
+                    //categories finished downloading
+                    downloadItems();
+                }
+            }
+        };
+        handler.post(categoryRunnable);
+    }
+
+
+    private void downloadItems() {
+        categories.clear();
         for(int i=0;i<38;i++){
             categories.add(i);
         }
@@ -100,84 +147,80 @@ public class ItemsFragment extends Fragment {
         runnable = new Runnable() {
             @Override
             public void run() {
-
-                if(alphaList.size()==0){
-                    if(categories.size()==0){
-                        return;
-                    }
-
-                    Log.d("debug", "category request"+categories.get(0));
-                    Client.get().getCategory("" + categories.get(0), new Callback<CategoryResponse>() {
-                        @Override
-                        public void success(CategoryResponse categoryResponse, Response response) {
-                            Log.d("debug", "category success");
-                            alphaList.clear();
-                            if(categoryResponse!=null){
-                                alphaList.addAll(categoryResponse.getAlpha());
-                                categories.remove(0);
-                                categoryId=categories.get(0);
-                            }
-                            handler.post(runnable);
-                            //startDownloading();
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            Log.d("debug", "fail");
-                        }
-                    });
-                }
-
+                //if(alphaList.size()==0){
+                if(categories.size()!=0){
                     if (alphaList.size() != 0) {
-                        Alpha alpha = alphaList.get(0);
-                        Log.d("debug", "alpha items:"+alpha.getItems());
-                        if (!alpha.getItems().equals("0")) {
-                            int cycles = Integer.parseInt(alpha.getItems()) / 12;
-                            if (Integer.parseInt(alpha.getItems()) % 12 != 0) {
-                                cycles += 1;
+                        if (pages.size()==0){
+
+                            Alpha alpha = alphaList.get(0);
+                            Log.d("debug", "alpha items:"+alpha.getItems());
+                            if (!alpha.getItems().equals("0")) {
+                                int cycles = Integer.parseInt(alpha.getItems()) / 12;
+                                if (Integer.parseInt(alpha.getItems()) % 12 != 0) {
+                                    cycles += 1;
+                                }
+                                for(int i=1;i<=cycles;i++){
+                                    pages.add(i);
+                                }
+                                handler.post(runnable);
+
+                                Log.d("debug", "cycles:" + cycles);
+                            }else{
+                                if(alpha.getLetter().equals("z")){
+                                    Log.d("debug", "switching category");
+                                    categories.remove(0);
+                                }
+                                Log.d("debug", "0 items here skipping in "+alphaList.get(0).getLetter());
+                                alphaList.remove(0);
+                                handler.postDelayed(runnable, 20);
+
                             }
-                            Log.d("debug", "cycles:"+cycles);
+                        }else {
+                            Client.get().getItemsInCategory("" + categories.get(0), alphaList.get(0).getLetter(), "" + pages.get(0), new Callback<ItemResponse>() {
+                                @Override
+                                public void success(ItemResponse itemResponse, Response response) {
+                                    //Log.d("debug", "success");
+                                    //MySQLiteHelper.getInstance(getActivity()).addItemsInCategory(itemResponse.getItems(), categoryId);
+                                    //items.addAll(itemResponse.getItems());
+                                    //adapter.notifyDataSetChanged();
+                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-                            for (int c = 1; c <= cycles; c++) {
-                                Client.get().getItemsInCategory("" + categoryId, alpha.getLetter(), "" + c, new Callback<ItemResponse>() {
-                                    @Override
-                                    public void success(ItemResponse itemResponse, Response response) {
-                                        //Log.d("debug", "success");
-                                        //MySQLiteHelper.getInstance(getActivity()).addItemsInCategory(itemResponse.getItems(), categoryId);
-                                        //items.addAll(itemResponse.getItems());
-                                        //adapter.notifyDataSetChanged();
-                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-                                        if(response.getBody() != null){
-                                            for(Item item : itemResponse.getItems()){
-                                                reference.child("items").child(item.getItemName()).setValue(item.getItemId());
+                                    if (response.getBody() != null) {
+                                        pages.remove(0);
+                                        for (Item item : itemResponse.getItems()) {
+                                            String key = item.getItemName().replaceAll("[-+.^:,]","");
+                                            reference.child("items").child(key).setValue(item.getItemId());
+                                        }
+                                        if(pages.size()==0){
+                                            Log.d("debug", "done downloading items for letter " + alphaList.get(0).getLetter() + " in category: " + categories.get(0));
+                                            if(alphaList.get(0).getLetter().equals("z")){
+                                                Log.d("debug", "switching category in callback");
+                                                categories.remove(0);
                                             }
+                                            alphaList.remove(0);
+                                            Log.d("debug", "break for "+delayTimer+" ms");
+                                            handler.postDelayed(runnable,delayTimer);
+                                        }else{
+                                            Log.d("debug", "finished downloading for page"+(pages.get(0)-1));
+                                            handler.postDelayed(runnable,delayTimer);
                                         }
 
+                                    }else{
+                                        Log.d("debug", "0byte body repeating request and increasing delay");
+                                        handler.postDelayed(runnable,delayTimer);
+                                        delayTimer += 100;
                                     }
+                                }
 
-                                    @Override
-                                    public void failure(RetrofitError error) {
-                                        Log.d("debug", "fail");
-                                    }
-                                });
-                                try {
-                                    Log.d("debug", "sleepy time");
-                                    Thread.sleep(300);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Log.d("debug", "fail");
+                                    handler.post(runnable);
                                 }
-                                if (c == cycles) {
-                                    Log.d("debug", "done downloading items for letter " + alphaList.get(0).getLetter()+ " in category: "+categoryId);
-                                    alphaList.remove(0);
-                                    handler.postDelayed(runnable,300);
-                                }
-                            }
-                        } else { // this letter has no available items so lets skip it
-                            alphaList.remove(0);
-                            handler.postDelayed(runnable,300);
+                            });
                         }
                     }
+                }
             }
         };
         handler.post(runnable);
