@@ -93,7 +93,7 @@ public class ItemsFragment extends Fragment {
                         Log.d("debug","fail");
                     }
                 });*/
-                downloadCategories();
+                //downloadCategories();
             //}
         }
     }
