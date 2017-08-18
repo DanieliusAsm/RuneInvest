@@ -20,13 +20,14 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="MainActivity"></activity>
+            android:label="MainActivity" />
 
-        <service android:name=".GrandExchangeCheck"></service>
+        <service android:name=".GrandExchangeCheck" />
 
-        <activity android:name=".ChartActivity"></activity>
-        <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".ChartActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".SearchActivity"></activity>
     </application>
 
 </manifest>

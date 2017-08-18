@@ -232,6 +232,7 @@ public class ItemsFragment extends Fragment {
         unbinder.unbind();
     }
 
+    // // TODO: 2017-08-18 make this class public and reuse it in search, favorite 
     private class MyRecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
         List<Item> items;
 
