@@ -1,25 +1,40 @@
 package com.example.danielius.runeinvest;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
 
 public class SearchActivity extends AppCompatActivity {
 
-    DatabaseReference databaseReference;
+    SearchView searchView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+    }
 
-        Toast.makeText(this, "Searching...", Toast.LENGTH_SHORT).show();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_toolbar,menu);
 
-        DatabaseReference ref = databaseReference.child("items").child("adsa");
-        Log.d("debug","ref "+ref);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent intent = new Intent(SearchActivity.this,SearchResultsActivity.class);
+                intent.putExtra("query",query);
+                startActivity(intent);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return true;
     }
 }
