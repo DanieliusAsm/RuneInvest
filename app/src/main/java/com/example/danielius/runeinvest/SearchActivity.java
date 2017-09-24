@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 
+import com.example.danielius.runeinvest.fragments.SearchResultsFragment;
+
 public class SearchActivity extends AppCompatActivity {
 
     SearchView searchView;
@@ -23,9 +25,16 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(SearchActivity.this,SearchResultsActivity.class);
-                intent.putExtra("query",query);
-                startActivity(intent);
+                searchView.clearFocus();
+                SearchResultsFragment fragment = new SearchResultsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("query",query);
+                fragment.setArguments(bundle);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container,fragment)
+                        .addToBackStack(null)
+                        .commit();
                 return true;
             }
 

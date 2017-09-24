@@ -287,7 +287,10 @@ public class ItemsFragment extends Fragment {
         @OnClick(R.id.row_item)
         void onClick(){
             ChartFragment fragment = new ChartFragment();
-            fragment.setItemId(items.get(getAdapterPosition()).getItemId());
+            Bundle bundle = new Bundle();
+            bundle.putString("item_id",items.get(getAdapterPosition()).getItemId());
+            fragment.setArguments(bundle);
+
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container,fragment)

@@ -51,6 +51,7 @@ public class ChartFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
+        itemId = getArguments().getString("item_id");
 
         Client.get().getItemGraph(itemId, new Callback<GraphResponse>() {
             @Override
@@ -123,9 +124,5 @@ public class ChartFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
     }
 }

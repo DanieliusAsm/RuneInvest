@@ -27,7 +27,6 @@
         <activity android:name=".ChartActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".SearchResultsActivity" android:label="Search Results"/>
         <activity android:name=".SearchActivity"></activity>
     </application>
 
