@@ -5,7 +5,8 @@
     android:layout_height="100dp"
     android:background="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:id="@+id/row_item">
+    android:id="@+id/row_item"
+    android:gravity="center">
 
     <ImageView
         android:id="@+id/item_image"

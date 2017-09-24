@@ -73,28 +73,28 @@ public class ItemsFragment extends Fragment {
         recycler.setAdapter(adapter);
 
         if(items.size()==0){
-            /*List<Item> categoryItems = MySQLiteHelper.getInstance(getActivity().getBaseContext()).getItemsInCategory(categoryId);
+            List<Item> categoryItems = MySQLiteHelper.getInstance(getActivity().getBaseContext()).getItemsInCategory(categoryId);
             if(categoryItems!= null){
                 Log.d("debug", "category items not null");
                 items.addAll(categoryItems);
                 adapter.notifyDataSetChanged();
-            }else{*/
+            }else{
                 Log.d("debug", "category items null");
-                /*Client.get().getCategory(""+categoryId, new Callback<CategoryResponse>() {
+                Client.get().getCategory(""+categoryId, new Callback<CategoryResponse>() {
                     @Override
                     public void success(CategoryResponse categoryResponse, Response response) {
                         Log.d("debug", "category success");
-                        //alphaList.addAll(categoryResponse.getAlpha());
-                        startDownloading();
+                        alphaList.addAll(categoryResponse.getAlpha());
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         Log.d("debug","fail");
                     }
-                });*/
+                });
                 //downloadCategories();
-            //}
+            }
         }
     }
 
@@ -136,7 +136,6 @@ public class ItemsFragment extends Fragment {
         };
         handler.post(categoryRunnable);
     }
-
 
     private void downloadItems() {
         categories.clear();
@@ -298,7 +297,6 @@ public class ItemsFragment extends Fragment {
                     .commit();
         }
     }
-
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
