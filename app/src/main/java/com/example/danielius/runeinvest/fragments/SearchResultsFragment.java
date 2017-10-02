@@ -177,7 +177,7 @@ public class SearchResultsFragment extends Fragment {
                     selectedItems.add(getAdapterPosition());
                     v.setBackgroundColor(Color.LTGRAY);
                 }
-                mActionMode.setTitle(selectedItems.size());
+                mActionMode.setTitle(""+selectedItems.size());
             }
 
             return true;

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/drawer_categories"
+        android:title="Categories"
+        android:icon="@drawable/ic_folder_open_black_24dp"/>
+    <item
+        android:id="@+id/drawer_favourites"
+        android:title="Favourites"
+        android:icon="@drawable/ic_folder_special_black_24dp" />
+</menu>
