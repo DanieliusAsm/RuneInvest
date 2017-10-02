@@ -1,10 +1,12 @@
 package com.example.danielius.runeinvest;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.danielius.runeinvest.fragments.SearchResultsFragment;
 
@@ -25,7 +27,9 @@ public class SearchActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchView.clearFocus();
+                //searchView.clearFocus();
+                searchView.onActionViewCollapsed();
+
                 SearchResultsFragment fragment = new SearchResultsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("query",query);

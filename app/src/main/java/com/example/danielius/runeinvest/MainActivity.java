@@ -52,6 +52,7 @@ public class MainActivity extends SearchActivity {
         });
         actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
+
         //Intent service = new Intent(MainActivity.this, GrandExchangeCheck.class);
         //startService(service);
     }
