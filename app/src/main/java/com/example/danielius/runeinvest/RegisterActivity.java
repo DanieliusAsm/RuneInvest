@@ -42,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         firebaseAuth = FirebaseAuth.getInstance();
+
     }
 
     @OnClick(R.id.btn_register)

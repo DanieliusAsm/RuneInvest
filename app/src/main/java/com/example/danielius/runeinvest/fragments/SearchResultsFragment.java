@@ -1,15 +1,20 @@
 package com.example.danielius.runeinvest.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -28,6 +33,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import butterknife.Unbinder;
 
 public class SearchResultsFragment extends Fragment {
@@ -38,6 +44,8 @@ public class SearchResultsFragment extends Fragment {
     RecyclerView recycler;
     RecyclerAdapter adapter;
     Unbinder unbinder;
+    ArrayList<Integer> selectedItems = new ArrayList<>();
+    ActionMode mActionMode;
 
     @Nullable
     @Override
@@ -91,6 +99,7 @@ public class SearchResultsFragment extends Fragment {
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new RecyclerAdapter(items);
         recycler.setAdapter(adapter);
+
     }
 
     @Override
@@ -115,6 +124,7 @@ public class SearchResultsFragment extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.title.setText(items.get(position).getName());
+            holder.itemView.setBackgroundColor(Color.WHITE);
         }
 
         @Override
@@ -144,8 +154,80 @@ public class SearchResultsFragment extends Fragment {
                     .replace(R.id.fragment_container,fragment)
                     .addToBackStack(null)
                     .commit();
+
+        }
+
+        @OnLongClick(R.id.row_item)
+        boolean onLongClick(View v){
+            Log.d("debug", "onLongClick");
+
+            if(mActionMode==null){
+                AppCompatActivity activity = (AppCompatActivity)getActivity();
+                activity.getSupportActionBar().hide();
+                mActionMode = activity.startSupportActionMode(new ActionModeCallback());
+            }else{
+
+                Integer selectedItemIndex = new Integer(getAdapterPosition());
+                if(selectedItems.contains(selectedItemIndex)){
+                    Log.d("debug", "Removing selected item");
+                    selectedItems.remove(selectedItemIndex);
+                    v.setBackgroundColor(Color.WHITE);
+                }else{
+                    Log.d("debug", "Adding selected item");
+                    selectedItems.add(getAdapterPosition());
+                    v.setBackgroundColor(Color.LTGRAY);
+                }
+                mActionMode.setTitle(selectedItems.size());
+            }
+
+            return true;
         }
     }
 
+    private class ActionModeCallback implements ActionMode.Callback{
 
+        public ActionModeCallback(){}
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            Log.d("debug", "onCreateActionMode");
+            mode.getMenuInflater().inflate(R.menu.menu_cab,menu);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            Log.d("debug", "onActionItemClicked");
+            switch(item.getItemId()){
+                case R.id.action_favourite:
+                    break;
+                case R.id.action_delete:
+                    for(int selectedItem: selectedItems){
+                        items.remove(selectedItem);
+                    }
+                    mode.finish();
+                    break;
+                default:
+                    return true;
+            }
+
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            Log.d("debug", "onDestroyActionMode");
+            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+            mActionMode = null;
+
+            selectedItems.clear();
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

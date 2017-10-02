@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import butterknife.Unbinder;
 
 
@@ -108,5 +109,7 @@ public class CategoryFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         }
+
+
     }
 }
