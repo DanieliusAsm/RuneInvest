@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.danielius.runeinvest.fragments.CategoryFragment;
+import com.example.danielius.runeinvest.fragments.FavouritesFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,13 +65,13 @@ public class MainActivity extends SearchActivity {
                 fragment = new CategoryFragment();
                 break;
             case R.id.drawer_favourites:
-
+                fragment = new FavouritesFragment();
                 break;
         }
         drawerLayout.closeDrawers();
         setTitle(menuItem.getTitle());
         menuItem.setChecked(true);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new Fragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment)
                 .addToBackStack(null).commit();
     }
 
