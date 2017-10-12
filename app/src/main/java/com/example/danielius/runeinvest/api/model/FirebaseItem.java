@@ -1,13 +1,15 @@
 package com.example.danielius.runeinvest.api.model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 /**
  * Created by Danielius on 2017-09-23.
  */
-
+@IgnoreExtraProperties
 public class FirebaseItem {
 
-    private long id;
-    private String name;
+    long id;
+    String name;
 
     public FirebaseItem(long id){
         this.id=id;

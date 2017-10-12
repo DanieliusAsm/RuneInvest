@@ -1,6 +1,7 @@
 package com.example.danielius.runeinvest.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,9 @@ import android.view.ViewGroup;
 import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.adapters.MyItemsRecyclerAdapter;
 import com.example.danielius.runeinvest.api.model.FirebaseItem;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -19,8 +23,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +43,7 @@ public class FavouritesFragment extends Fragment {
     MyItemsRecyclerAdapter adapter;
     ArrayList<FirebaseItem> items = new ArrayList();
     DatabaseReference databaseReference;
+    DocumentReference ref;
 
     @Nullable
     @Override
@@ -49,6 +59,27 @@ public class FavouritesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new MyItemsRecyclerAdapter(getActivity(),items);
         recyclerView.setAdapter(adapter);
+
+
+        //FirebaseFirestore.setLoggingEnabled(true);
+        ref = FirebaseFirestore.getInstance().document("users/"+FirebaseAuth.getInstance().getUid());
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        Map<String, Object> user = new HashMap<>();
+        user.put("user","asdfws");
+        user.put("favourites","array");
+
+        /*ref.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d("debug","success");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("debug","Error adding document",e);
+            }
+        });*/
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
