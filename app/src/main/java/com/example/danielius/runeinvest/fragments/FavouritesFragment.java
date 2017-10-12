@@ -60,27 +60,6 @@ public class FavouritesFragment extends Fragment {
         adapter = new MyItemsRecyclerAdapter(getActivity(),items);
         recyclerView.setAdapter(adapter);
 
-
-        //FirebaseFirestore.setLoggingEnabled(true);
-        ref = FirebaseFirestore.getInstance().document("users/"+FirebaseAuth.getInstance().getUid());
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        Map<String, Object> user = new HashMap<>();
-        user.put("user","asdfws");
-        user.put("favourites","array");
-
-        /*ref.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d("debug","success");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w("debug","Error adding document",e);
-            }
-        });*/
-
         databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("favourites").orderByValue().addChildEventListener(new ChildEventListener() {

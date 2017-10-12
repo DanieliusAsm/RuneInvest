@@ -90,45 +90,9 @@ public class SearchResultsFragment extends Fragment {
             }
         });
 
-        /*databaseReference.orderByKey().startAt(queryText).endAt(queryText+"\uf8ff")
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Log.d("debug","onChildAdded");
-                        FirebaseItem item = dataSnapshot.getValue(FirebaseItem.class);
-                        Log.d("debug","snapshot id:"+item.getId());
-                        Log.d("debug","snapshot key:"+dataSnapshot.getKey());
-                        Log.d("debug","--------------");
-                        item.setName(dataSnapshot.getKey());
-                        items.add(item);
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        Log.d("debug","onChildChanged");
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        Log.d("debug","onChildRemoved");
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                        Log.d("debug","onChildMoved");
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d("debug","onCancelled");
-                    }
-          });*/
-
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new MyItemsRecyclerAdapter(getActivity(),items);
         recycler.setAdapter(adapter);
-
     }
 
     @Override
