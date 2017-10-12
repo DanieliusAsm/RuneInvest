@@ -1,6 +1,7 @@
 package com.example.danielius.runeinvest.api.model;
 
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.google.firebase.firestore.DocumentReference;
 
 /**
  * Created by Danielius on 2017-09-23.
@@ -8,8 +9,10 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class FirebaseItem {
 
-    long id;
-    String name;
+    private long id;
+    private String name;
+    private int price;
+    private DocumentReference itemReference;
 
     public FirebaseItem(long id){
         this.id=id;
@@ -31,5 +34,21 @@ public class FirebaseItem {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public DocumentReference getItemReference() {
+        return itemReference;
+    }
+
+    public void setItemReference(DocumentReference itemReference) {
+        this.itemReference = itemReference;
     }
 }

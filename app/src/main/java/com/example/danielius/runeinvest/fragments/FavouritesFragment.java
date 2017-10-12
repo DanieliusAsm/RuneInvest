@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import com.example.danielius.runeinvest.R;
 import com.example.danielius.runeinvest.adapters.MyItemsRecyclerAdapter;
 import com.example.danielius.runeinvest.api.model.FirebaseItem;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -25,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +41,8 @@ import butterknife.Unbinder;
 
 public class FavouritesFragment extends Fragment {
 
+
+    public static final String TAG = "debug";
     Unbinder unbinder;
     @BindView(R.id.my_items)
     RecyclerView recyclerView;
@@ -60,53 +66,24 @@ public class FavouritesFragment extends Fragment {
         adapter = new MyItemsRecyclerAdapter(getActivity(),items);
         recyclerView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        databaseReference.child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("favourites").orderByValue().addChildEventListener(new ChildEventListener() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        CollectionReference ref = FirebaseFirestore.getInstance().collection("users/"+auth.getUid()+"/favourites");
+
+        ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-               final String itemName = (String) dataSnapshot.getValue();
-                Log.d("debug","user fav:"+itemName);
-                Log.d("debug",FirebaseDatabase.getInstance().getReference("/items/"+itemName).toString());
-                FirebaseDatabase.getInstance().getReference("/items/"+itemName).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        FirebaseItem item = dataSnapshot.getValue(FirebaseItem.class);
-                        if(item!=null){
-                            item.setName(itemName);
-                            items.add(item);
-                            adapter.notifyDataSetChanged();
-                        }
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    QuerySnapshot snapshot = task.getResult();
+
+                    for(DocumentSnapshot documentSnapshot : snapshot.getDocuments()){
+                        Log.d(TAG,"data:"+documentSnapshot.getData());
+                        FirebaseItem item = documentSnapshot.toObject(FirebaseItem.class);
+                        items.add(item);
+                        adapter.notifyDataSetChanged();
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.e("debug",databaseError.getDetails());
-                    }
-                });
-
-
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+                }else{
+                    Log.w(TAG,"error getting favourites "+task.getException());
+                }
             }
         });
     }
