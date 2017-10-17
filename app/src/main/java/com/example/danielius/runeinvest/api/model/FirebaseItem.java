@@ -3,6 +3,9 @@ package com.example.danielius.runeinvest.api.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.firebase.firestore.DocumentReference;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Danielius on 2017-09-23.
  */
@@ -50,5 +53,13 @@ public class FirebaseItem {
 
     public void setItemReference(DocumentReference itemReference) {
         this.itemReference = itemReference;
+    }
+
+    public Map<String, Object> toHashMap(){
+        Map<String, Object> item = new HashMap<>();
+        item.put("name",name);
+        item.put("itemReference", itemReference);
+
+        return item;
     }
 }

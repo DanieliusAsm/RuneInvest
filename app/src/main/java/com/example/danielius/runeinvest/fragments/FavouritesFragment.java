@@ -4,10 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.danielius.runeinvest.R;
@@ -50,6 +54,7 @@ public class FavouritesFragment extends Fragment {
     ArrayList<FirebaseItem> items = new ArrayList();
     DatabaseReference databaseReference;
     DocumentReference ref;
+    private ArrayList<Integer> selectedItems;
 
     @Nullable
     @Override
@@ -63,8 +68,9 @@ public class FavouritesFragment extends Fragment {
         unbinder = ButterKnife.bind(this,view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new MyItemsRecyclerAdapter(getActivity(),items);
+        adapter = new MyItemsRecyclerAdapter(getActivity(),items, selectedItems);
         recyclerView.setAdapter(adapter);
+        adapter.setActionModeCallback(new MyActionModeCallback());
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         CollectionReference ref = FirebaseFirestore.getInstance().collection("users/"+auth.getUid()+"/favourites");
@@ -92,5 +98,46 @@ public class FavouritesFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    private class MyActionModeCallback implements ActionMode.Callback {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            Log.d("debug", "onCreateActionMode");
+            mode.getMenuInflater().inflate(R.menu.menu_cab_favourites,menu);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch(item.getItemId()){
+                case R.id.action_delete:
+                    Log.d("debug", "items size:"+items.size());
+                    for(int i=0;i<selectedItems.size();i++){
+                        int selectedItem = selectedItems.get(i);
+                        items.remove(selectedItem-i);
+                        adapter.notifyDataSetChanged();
+                    }
+                    break;
+            }
+            mode.finish();
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            Log.d("debug", "onDestroyActionMode");
+            ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+            adapter.setActionMode(null);
+
+            selectedItems.clear();
+            adapter.notifyDataSetChanged();
+        }
     }
 }

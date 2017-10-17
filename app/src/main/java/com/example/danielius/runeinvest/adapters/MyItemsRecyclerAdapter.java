@@ -3,6 +3,7 @@ package com.example.danielius.runeinvest.adapters;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.RecyclerView;
@@ -30,12 +31,14 @@ public class MyItemsRecyclerAdapter extends RecyclerView.Adapter<MyItemsRecycler
 
     ArrayList<FirebaseItem> items;
     AppCompatActivity activity;
-    ActionMode mActionMode;
-    ArrayList<Integer> selectedItems = new ArrayList<>();
+    private ActionMode mActionMode;
+    ArrayList<Integer> selectedItems;
+    ActionMode.Callback mCallback;
 
-    public MyItemsRecyclerAdapter(Activity activity, ArrayList<FirebaseItem> items) {
+    public MyItemsRecyclerAdapter(Activity activity, ArrayList<FirebaseItem> items,ArrayList<Integer> selectedItems) {
         this.activity = (AppCompatActivity) activity;
         this.items = items;
+        this.selectedItems = selectedItems;
     }
 
     @Override
@@ -53,6 +56,18 @@ public class MyItemsRecyclerAdapter extends RecyclerView.Adapter<MyItemsRecycler
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public void setActionModeCallback(ActionMode.Callback callback){
+        this.mCallback = callback;
+    }
+
+    public ActionMode getActionMode() {
+        return mActionMode;
+    }
+
+    public void setActionMode(ActionMode mActionMode) {
+        this.mActionMode = mActionMode;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -81,18 +96,20 @@ public class MyItemsRecyclerAdapter extends RecyclerView.Adapter<MyItemsRecycler
         @OnLongClick(R.id.row_item)
         boolean onLongClick(View v) {
             Log.d("debug", "onLongClick");
+            if(mCallback == null){
+                return true;
+            }
 
             if (mActionMode == null) {
                 activity.getSupportActionBar().hide();
-                mActionMode = activity.startSupportActionMode(new ActionModeCallback());
+                mActionMode = activity.startSupportActionMode(mCallback);
 
                 Log.d("debug", "Adding selected item");
                 selectedItems.add(getAdapterPosition());
                 v.setBackgroundColor(Color.LTGRAY);
                 mActionMode.setTitle("" + selectedItems.size());
             } else {
-
-                Integer selectedItemIndex = new Integer(getAdapterPosition());
+                Integer selectedItemIndex = getAdapterPosition();
                 if (selectedItems.contains(selectedItemIndex)) {
                     Log.d("debug", "Removing selected item");
                     selectedItems.remove(selectedItemIndex);
@@ -106,55 +123,6 @@ public class MyItemsRecyclerAdapter extends RecyclerView.Adapter<MyItemsRecycler
             }
 
             return true;
-        }
-    }
-
-    private class ActionModeCallback implements ActionMode.Callback{
-
-        public ActionModeCallback(){}
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            Log.d("debug", "onCreateActionMode");
-            mode.getMenuInflater().inflate(R.menu.menu_cab,menu);
-
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            Log.d("debug", "onActionItemClicked");
-            switch(item.getItemId()){
-                case R.id.action_favourite:
-                    break;
-                case R.id.action_delete:
-                    Log.d("debug", "items size:"+items.size());
-                    for(int i=0;i<selectedItems.size();i++){
-                        int selectedItem = selectedItems.get(i);
-                        items.remove(selectedItem-i);
-                    }
-                    mode.finish();
-                    break;
-                default:
-                    return true;
-            }
-
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            Log.d("debug", "onDestroyActionMode");
-            activity.getSupportActionBar().show();
-            mActionMode = null;
-
-            selectedItems.clear();
-            notifyDataSetChanged();
         }
     }
 }
