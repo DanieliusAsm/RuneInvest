@@ -107,7 +107,7 @@ public class SearchResultsFragment extends Fragment {
                             Map<String, Object> favourite = firebaseItem.toHashMap();
 
                             // TODO check if exists already. Duplicates..
-                            firebaseFirestore.collection("/users/"+FirebaseAuth.getInstance().getUid()+"/favourites").add(favourite);
+                            firebaseFirestore.document("/users/"+FirebaseAuth.getInstance().getUid()+"/favourites/"+firebaseItem.getName()).set(favourite);
                         }
                         break;
                     case R.id.action_delete:

@@ -34,6 +34,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class FavouritesFragment extends Fragment {
     ArrayList<FirebaseItem> items = new ArrayList();
     DatabaseReference databaseReference;
     DocumentReference ref;
-    private ArrayList<Integer> selectedItems;
+    private ArrayList<Integer> selectedItems = new ArrayList<>();
 
     @Nullable
     @Override
@@ -119,11 +120,22 @@ public class FavouritesFragment extends Fragment {
             switch(item.getItemId()){
                 case R.id.action_delete:
                     Log.d("debug", "items size:"+items.size());
+                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
                     for(int i=0;i<selectedItems.size();i++){
                         int selectedItem = selectedItems.get(i);
+                        FirebaseItem firebaseItem = items.get(selectedItem);
+
+                        batch.delete(FirebaseFirestore.getInstance().document("users/"+FirebaseAuth.getInstance().
+                                getUid()+"/favourites/"+firebaseItem.getName()));
                         items.remove(selectedItem-i);
-                        adapter.notifyDataSetChanged();
+                        firebaseItem.getItemReference().set(firebaseItem);
                     }
+                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            //babalalbalbal
+                        }
+                    });
                     break;
             }
             mode.finish();
